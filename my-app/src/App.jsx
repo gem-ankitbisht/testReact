@@ -1,32 +1,39 @@
-
 import "./App.css";
 import LoginDocter from "./components/auth/login/login";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { AuthProvider } from "./context/SourceContext";
+import { AuthProvider } from "./components/auth/authContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./components/Login";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import AdminPage from "./components/Admin";
 
 function App() {
   return (
     <AuthProvider>
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
             path="/dashboard"
             element={
-              <ProtectedRoute
-                element={<LoginDocter />}
-                requiredRole="admin" // Use requiredRole to enforce authorization
-              />
+              <ProtectedRoute>
+                <LoginDocter />
+              </ProtectedRoute>
             }
           />
-        {/* Add more protected routes as needed */}
-      </Routes>
-    </Router>
-  </AuthProvider>
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/unauthorized" element={<div>Not authorized</div>} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
